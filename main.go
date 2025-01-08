@@ -5,9 +5,12 @@ import (
 	"log"
 	"os"
 
-	"github.com/StrCode/Gator/internal/comm"
 	"github.com/StrCode/Gator/internal/config"
 )
+
+type state struct {
+	cfg *config.Config
+}
 
 func main() {
 	cfg, err := config.Read()
@@ -16,32 +19,25 @@ func main() {
 	}
 	fmt.Printf("Read config: %+v\n", cfg)
 
-	newState := comm.State{
-		Cfg: &cfg,
+	programState := state{
+		cfg: &cfg,
 	}
 
-	items := make(map[string]func(*comm.State, comm.Command) error)
-	commands := comm.Commands{
-		Items: items,
+	cmds := commands{
+		registeredCommands: make(map[string]func(*state, command) error),
+	}
+	cmds.register("login", handlerLogin)
+
+	if len(os.Args) < 2 {
+		log.Fatal("Usage: cli <command> [args...]")
+		return
 	}
 
-	commands.Register("login", comm.HandlerLogin)
+	cmdName := os.Args[1]
+	cmdArgs := os.Args[2:]
 
-	words := os.Args
-
-	if len(words) < 2 {
-		log.Fatalf("Not enough arguments were provided")
-		os.Exit(0)
-	}
-
-	commands.Run(&newState, comm.Command{
-		words[1],
-		words[1:],
-	})
-
-	cfg, err = config.Read()
+	err = cmds.run(&programState, command{Name: cmdName, Args: cmdArgs})
 	if err != nil {
-		log.Fatalf("error reading config: %v", err)
+		log.Fatal(err)
 	}
-	fmt.Printf("Read config again: %+v\n", cfg)
 }
