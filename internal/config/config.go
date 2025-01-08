@@ -8,6 +8,16 @@ import (
 
 const configFileName = ".gatorconfig.json"
 
+type state struct {
+	cfg *Config
+}
+
+type command struct {
+	name string
+	args []string
+	fun  func(string) string
+}
+
 type Config struct {
 	DBURL           string `json:"db_url"`
 	CurrentUserName string `json:"current_user_name"`
