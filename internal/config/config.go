@@ -8,10 +8,6 @@ import (
 
 const configFileName = ".gatorconfig.json"
 
-type state struct {
-	cfg *Config
-}
-
 type command struct {
 	name string
 	args []string
