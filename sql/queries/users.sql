@@ -12,7 +12,6 @@ RETURNING *;
 SELECT * FROM users
 WHERE name = $1;
 
-
 -- name: DeleteUsers :exec
 Delete FROM users;
 
