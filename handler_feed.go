@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func handerAddFeed(s *state, cmd command) error {
+func handlerAddFeed(s *state, cmd command) error {
 	if s.cfg.CurrentUserName == "" {
 		return fmt.Errorf("please login in first")
 	}
