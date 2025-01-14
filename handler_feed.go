@@ -30,19 +30,11 @@ func handlerFeeds(s *state, cmd command) error {
 	return nil
 }
 
-func handlerAddFeed(s *state, cmd command) error {
-	if s.cfg.CurrentUserName == "" {
-		return fmt.Errorf("please login in first")
-	}
-
-	user, err := s.db.GetUser(context.Background(), s.cfg.CurrentUserName)
-	if err != nil {
-		return fmt.Errorf("issues retrieving user information")
-	}
-
+func handlerAddFeed(s *state, cmd command, user database.User) error {
 	if len(cmd.Args) != 2 {
 		return fmt.Errorf("usage: %s <name>", cmd.Name)
 	}
+
 	name := cmd.Args[0]
 	url := cmd.Args[1]
 
