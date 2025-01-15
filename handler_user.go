@@ -62,7 +62,7 @@ func handlerRegister(s *state, cmd command) error {
 func handlerUsers(s *state, cmd command) error {
 	users, err := s.db.GetUsers(context.Background())
 	if err != nil {
-		return fmt.Errorf("couldn't delete users: %w", err)
+		return fmt.Errorf("couldn't retrieve users: %w", err)
 	}
 
 	for _, user := range users {
