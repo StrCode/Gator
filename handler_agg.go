@@ -2,11 +2,13 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"log"
 	"time"
 
 	"github.com/StrCode/Gator/internal/database"
+	"github.com/google/uuid"
 )
 
 func handlerAgg(s *state, cmd command) error {
@@ -51,7 +53,31 @@ func scrapeFeed(db *database.Queries, feed database.Feed) {
 		return
 	}
 	for _, item := range feedData.Channel.Item {
-		fmt.Printf("Found post: %s\n", item.Title)
+		post, err := savePost(db, item, feed.ID)
+		if err == nil {
+			fmt.Printf("inserted post: %s\n", post.Title)
+		}
 	}
 	log.Printf("Feed %s collected, %v posts found", feed.Name, len(feedData.Channel.Item))
+}
+
+func savePost(db *database.Queries, item RSSItem, id uuid.UUID) (database.Post, error) {
+	newPost, err := db.CreatePost(context.Background(), database.CreatePostParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now().UTC(),
+		UpdatedAt: time.Now().UTC(),
+		Title:     item.Title,
+		Url:       item.Link,
+		Description: sql.NullString{
+			String: item.Description,
+			Valid:  true,
+		},
+		// PublishedAt: (item.PubDate),
+		FeedID: id,
+	})
+	if err != nil {
+		log.Printf("Could not create post: %v", err)
+	}
+
+	return newPost, nil
 }
