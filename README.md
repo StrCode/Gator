@@ -1,33 +1,59 @@
 # Gator
-This project is a test project using Go that is used to scrape feeds and save the posts from those feeds and save into a database.
 
-## Tools you need installed
-In order to run this program, you will need to install both **Postgres** and **Go** 
+A multi-player command line tool for aggregating RSS feeds and viewing the posts.
 
-### Install Go
-In order to install Go on your Mac/Linux/Windows, visit the Go website and install the Go tools[Go install](https://go.dev/doc/install) "Install golang on your computer"
+## Installation
 
-### install Postgres
-In order to install Postgres on your computer, visit the Postgres website and install the postgres on your computer using the link below
+Make sure you have the latest [Go toolchain](https://golang.org/dl/) installed as well as a local Postgres database. You can then install `gator` with:
 
-[Install Postgres](https://www.postgresql.org/download/)
+```bash
+go install ...
+```
 
+## Config
 
-## install the Gator cli
-install the cli on your computer
-`go install https://github.com/StrCode/Gator`
+Create a `.gatorconfig.json` file in your home directory with the following structure:
 
-## Config file setup
-Create a new file in the root of your project named *.gatorconfig.json*. 
+```json
+{
+  "db_url": "postgres://username:@localhost:5432/database?sslmode=disable"
+}
+```
 
-## Running the command
-To run the project use the command
-`gator`
+Replace the values with your database connection string.
 
-# Gator commands
-- login - Login into the cli using a name as an argument
-- register - Register a new user on the cli
-- register - Register a new user on the cli
-- reset - Resets the database 
+## Usage
+
+Create a new user:
+
+```bash
+gator register <name>
+```
+
+Add a feed:
+
+```bash
+gator addfeed <url>
+```
+
+Start the aggregator:
+
+```bash
+gator agg 30s
+```
+
+View the posts:
+
+```bash
+gator browse [limit]
+```
+
+There are a few other commands you'll need as well:
+
+- `gator login <name>` - Log in as a user that already exists
+- `gator users` - List all users
+- `gator feeds` - List all feeds
+- `gator follow <url>` - Follow a feed that already exists in the database
+- `gator unfollow <url>` - Unfollow a feed that already exists in the database
 
 
